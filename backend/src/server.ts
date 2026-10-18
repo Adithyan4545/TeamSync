@@ -8,6 +8,10 @@ import path from "path";
 // Load environment variables
 dotenv.config();
 
+// Validate JWT Configuration (fails fast if secrets are missing)
+import { validateJwtConfig } from "./config/jwt";
+validateJwtConfig();
+
 // Initialize Email Configuration
 import "./config/email";
 import { emailTransporter } from "./config/email";

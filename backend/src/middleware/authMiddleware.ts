@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, ACCESS_TOKEN_EXPIRES_IN, REFRESH_TOKEN_EXPIRES_IN } from '../config/jwt';
+import { JWT_ACCESS_SECRET } from '../config/jwt';
 
 declare global {
   namespace Express {
@@ -29,7 +29,10 @@ export const verifyAccessToken = (req: AuthRequest, res: Response, next: NextFun
     const payload = jwt.verify(token, JWT_ACCESS_SECRET) as { id: string; role: string };
     req.user = { id: payload.id, role: payload.role };
     next();
-  } catch (err) {
+  } catch (err: any) {
+    if (err?.message?.startsWith('JWT configuration error:')) {
+      return next(err);
+    }
     return res.status(401).json({ success: false, message: 'Invalid or expired access token' });
   }
 };
@@ -63,7 +66,10 @@ export const optionalAccessToken = (req: AuthRequest, res: Response, next: NextF
     try {
       const payload = jwt.verify(token, JWT_ACCESS_SECRET) as { id: string; role: string };
       req.user = { id: payload.id, role: payload.role };
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.message?.startsWith('JWT configuration error:')) {
+        return next(err);
+      }
       // Ignore invalid token for optional auth
     }
   }

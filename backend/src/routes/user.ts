@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { verifyAccessToken, AuthRequest } from "../middleware/authMiddleware";
+import { JWT_ACCESS_SECRET } from "../config/jwt";
 import multer from 'multer';
 import path from 'path';
 
@@ -182,7 +183,7 @@ router.post("/register", async (req: Request, res: Response) => {
     if (existing) return res.status(400).json({ msg: "User already exists" });
     const hashed = await bcrypt.hash(password, 10);
     const user = await User.create({ name, email, password: hashed });
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, { expiresIn: "7d" });
+    const token = jwt.sign({ id: user._id }, JWT_ACCESS_SECRET, { expiresIn: "7d" });
     res.json({ token, user: { id: user._id, name, email } });
   } catch (err) {
     res.status(500).json({ msg: "Server error" });
@@ -197,7 +198,7 @@ router.post("/login", async (req: Request, res: Response) => {
     if (!user || !user.password) return res.status(400).json({ msg: "Invalid credentials" });
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, { expiresIn: "7d" });
+    const token = jwt.sign({ id: user._id }, JWT_ACCESS_SECRET, { expiresIn: "7d" });
     res.json({ token, user: { id: user._id, name: user.name, email } });
   } catch (err) {
     res.status(500).json({ msg: "Server error" });
