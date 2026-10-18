@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-space), system-ui, sans-serif;
+  
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+  --color-dark-sidebar: var(--sidebar-bg);
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius: 0.75rem;
+}
+
+@layer base {
+  /* Light Mode Design System (:root and .light) */
+  :root, .light {
+    --background: hsl(220, 20%, 97%);
+    --foreground: hsl(224, 30%, 10%);
+    --card: hsl(0, 0%, 100%);
+    --card-foreground: hsl(224, 30%, 10%);
+    --popover: hsl(0, 0%, 100%);
+    --popover-foreground: hsl(224, 30%, 10%);
+    --primary: hsl(265, 89%, 60%);
+    --primary-foreground: hsl(0, 0%, 100%);
+    --secondary: hsl(160, 84%, 39%);
+    --secondary-foreground: hsl(0, 0%, 100%);
+    --muted: hsl(220, 15%, 92%);
+    --muted-foreground: hsl(220, 10%, 45%);
+    --accent: hsl(220, 15%, 90%);
+    --accent-foreground: hsl(224, 30%, 10%);
+    --destructive: hsl(0, 84%, 60%);
+    --destructive-foreground: hsl(0, 0%, 100%);
+    --border: hsl(220, 13%, 88%);
+    --input: hsl(220, 13%, 88%);
+    --ring: hsl(265, 89%, 60%);
+    --sidebar-bg: rgba(255, 255, 255, 0.7);
+  }
+
+  /* Ultra-Premium Dark Mode Design System (.dark) */
+  .dark {
+    --background: hsl(224, 25%, 6%);
+    --foreground: hsl(210, 20%, 98%);
+    --card: hsl(224, 22%, 9%);
+    --card-foreground: hsl(210, 20%, 98%);
+    --popover: hsl(224, 22%, 9%);
+    --popover-foreground: hsl(210, 20%, 98%);
+    --primary: hsl(265, 89%, 66%);
+    --primary-foreground: hsl(0, 0%, 100%);
+    --secondary: hsl(160, 84%, 39%);
+    --secondary-foreground: hsl(0, 0%, 100%);
+    --muted: hsl(224, 18%, 14%);
+    --muted-foreground: hsl(215, 15%, 65%);
+    --accent: hsl(224, 18%, 16%);
+    --accent-foreground: hsl(210, 20%, 98%);
+    --destructive: hsl(0, 84%, 60%);
+    --destructive-foreground: hsl(0, 0%, 100%);
+    --border: rgba(255, 255, 255, 0.08);
+    --input: rgba(255, 255, 255, 0.08);
+    --ring: hsl(265, 89%, 66%);
+    --sidebar-bg: rgba(11, 13, 20, 0.5);
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-background/50 backdrop-blur-2xl border border-border shadow-lg;
+  }
+  .glass-card {
+    @apply bg-card/40 border border-border backdrop-blur-2xl shadow-xl hover:bg-accent/10 hover:border-border/80 transition-all duration-300 rounded-2xl;
+  }
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-primary to-fuchsia-400;
+  }
+  .text-gradient-brand {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-500 to-cyan-500;
+  }
+}
+
+html, body {
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-space), system-ui, -apple-system, sans-serif;
+  background-color: transparent !important;
+  color: var(--foreground);
+}
+
+option {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* Chrome/Edge Autofill fix for dark themes */
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover, 
+.dark input:-webkit-autofill:focus, 
+.dark input:-webkit-autofill:active,
+.auth-theme input:-webkit-autofill,
+.auth-theme input:-webkit-autofill:hover, 
+.auth-theme input:-webkit-autofill:focus, 
+.auth-theme input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #0B0D14 inset !important;
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Force dark theme variables for auth layout */
+.auth-theme {
+    --background: hsl(224, 25%, 6%) !important;
+    --foreground: hsl(210, 20%, 98%) !important;
+    --card: hsl(224, 22%, 9%) !important;
+    --card-foreground: hsl(210, 20%, 98%) !important;
+    --popover: hsl(224, 22%, 9%) !important;
+    --popover-foreground: hsl(210, 20%, 98%) !important;
+    --primary: hsl(265, 89%, 66%) !important;
+    --primary-foreground: hsl(0, 0%, 100%) !important;
+    --secondary: hsl(160, 84%, 39%) !important;
+    --secondary-foreground: hsl(0, 0%, 100%) !important;
+    --muted: hsl(224, 18%, 14%) !important;
+    --muted-foreground: hsl(215, 15%, 65%) !important;
+    --accent: hsl(224, 18%, 16%) !important;
+    --accent-foreground: hsl(210, 20%, 98%) !important;
+    --destructive: hsl(0, 84%, 60%) !important;
+    --destructive-foreground: hsl(0, 0%, 100%) !important;
+    --border: rgba(255, 255, 255, 0.08) !important;
+    --input: rgba(255, 255, 255, 0.08) !important;
+    --ring: hsl(265, 89%, 66%) !important;
+    color-scheme: dark !important;
+}
