@@ -46,6 +46,9 @@ export const sendJoinRequest = async (userId: Types.ObjectId, teamId: Types.Obje
   return saved;
 };
 
+/** Alias for sendJoinRequest */
+export const createJoinRequest = sendJoinRequest;
+
 export const withdrawJoinRequest = async (userId: Types.ObjectId, teamId: Types.ObjectId) => {
   const result = await TeamRequest.findOneAndUpdate(
     { user: userId, team: teamId },
