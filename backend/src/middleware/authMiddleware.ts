@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { JWT_ACCESS_SECRET } from '../config/jwt';
+import { User } from '../models/User';
 
 declare global {
   namespace Express {
@@ -74,4 +75,23 @@ export const optionalAccessToken = (req: AuthRequest, res: Response, next: NextF
     }
   }
   next();
+};
+
+/**
+ * Middleware ensuring the authenticated user is not soft-deleted.
+ * Expects req.user to be populated (e.g. following verifyAccessToken).
+ */
+export const requireActiveUser = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (!req.user?.id) {
+    return res.status(401).json({ success: false, message: 'Unauthenticated' });
+  }
+  try {
+    const user = await User.findOne({ _id: req.user.id, isDeleted: { $ne: true } });
+    if (!user) {
+      return res.status(403).json({ success: false, message: 'Account has been deactivated or deleted' });
+    }
+    next();
+  } catch (err: any) {
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
 };

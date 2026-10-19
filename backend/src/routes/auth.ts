@@ -97,8 +97,8 @@ router.post('/google', async (req: Request, res: Response) => {
 
 router.post('/logout', async (req: Request, res: Response) => {
   try {
-    const { userId, refreshToken } = req.body;
-    const result = await logout(userId, refreshToken);
+    const refreshToken = req.body?.refreshToken || req.cookies?.refreshToken;
+    const result = await logout(typeof refreshToken === 'string' ? refreshToken : undefined);
     res.clearCookie('refreshToken');
     res.json(result);
   } catch (err: any) {

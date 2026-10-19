@@ -22,7 +22,8 @@ export const configurePassport = (): void => {
       },
       async (_accessToken, _refreshToken, profile, done) => {
         try {
-          const email = profile.emails && profile.emails[0]?.value;
+          const rawEmail = profile.emails && profile.emails[0]?.value;
+          const email = rawEmail ? rawEmail.trim().toLowerCase() : undefined;
           const googleId = profile.id;
           const name = profile.displayName || profile.name?.givenName || 'Google User';
           const avatarUrl = profile.photos && profile.photos[0]?.value;

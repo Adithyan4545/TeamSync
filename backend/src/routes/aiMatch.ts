@@ -32,7 +32,7 @@ export interface AIMatchCandidateResult {
 router.get('/', verifyAccessToken, async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?.id;
-    const user = await User.findById(userId).lean();
+    const user = await User.findOne({ _id: userId, isDeleted: { $ne: true } }).lean();
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
     const userSkills = (user.skills || []).map((s: string) => s.trim());

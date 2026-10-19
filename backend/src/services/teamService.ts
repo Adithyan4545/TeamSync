@@ -46,7 +46,15 @@ export const getTeam = async (id: string) => {
 };
 
 export const updateTeam = async (id: string, updates: Partial<ITeam>) => {
-  return await Team.findByIdAndUpdate(id, updates, { new: true }).lean();
+  const sanitizedUpdates = { ...updates };
+  delete (sanitizedUpdates as any).leader;
+  delete (sanitizedUpdates as any).members;
+  delete (sanitizedUpdates as any).hackathon;
+  delete (sanitizedUpdates as any)._id;
+  delete (sanitizedUpdates as any).id;
+  delete (sanitizedUpdates as any).aiMatchScore;
+  delete (sanitizedUpdates as any).compatibilityScore;
+  return await Team.findByIdAndUpdate(id, sanitizedUpdates, { new: true }).lean();
 };
 
 export const deleteTeam = async (id: string) => {
@@ -64,9 +72,16 @@ export const reopenTeam = async (id: string) => {
 export const transferLeadership = async (teamId: string, newLeaderId: Types.ObjectId) => {
   const team = await Team.findById(teamId);
   if (!team) throw new Error('Team not found');
+  if (!team.members.some(m => m.equals(newLeaderId))) {
+    throw new Error('Target user must be a member of the team');
+  }
+  const oldLeaderId = team.leader;
   team.leader = newLeaderId;
   if (!team.members.some(m => m.equals(newLeaderId))) {
     team.members.push(newLeaderId);
+  }
+  if (oldLeaderId && !team.members.some(m => m.equals(oldLeaderId))) {
+    team.members.push(oldLeaderId);
   }
   return await team.save();
 };
@@ -77,7 +92,11 @@ export const removeMember = async (teamId: string, memberId: Types.ObjectId) => 
   if (team.leader.equals(memberId)) {
     throw new Error('Cannot remove team leader. Transfer leadership first.');
   }
+  const initialLength = team.members.length;
   team.members = team.members.filter(m => !m.equals(memberId));
+  if (team.members.length === initialLength) {
+    throw new Error('User is not a member of this team');
+  }
   if (team.status === 'Full' && team.members.length < team.maxMembers) {
     team.status = 'Open';
   }
